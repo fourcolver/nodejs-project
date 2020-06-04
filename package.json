@@ -1,0 +1,39 @@
+{
+  "name": "gigmanager",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon app.js"
+  },
+  "author": "Tobias Tersigni",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.536.0",
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.4",
+    "cors": "^2.8.5",
+    "dotenv": "^8.1.0",
+    "download": "^7.1.0",
+    "ejs": "^2.6.2",
+    "express": "^4.17.1",
+    "express-flash": "0.0.2",
+    "express-session": "^1.16.2",
+    "ics": "^2.18.0",
+    "lodash": "^4.17.15",
+    "log4js": "^5.3.0",
+    "memorystore": "^1.6.1",
+    "mongoose": "^5.6.7",
+    "mongoose-findorcreate": "^3.0.0",
+    "multer": "^1.4.2",
+    "multer-s3": "^2.9.0",
+    "nodemailer": "^6.3.0",
+    "numeral": "^2.0.6",
+    "passport": "^0.4.0",
+    "passport-local-mongoose": "^5.0.1",
+    "pdfmake": "^0.1.60"
+  }
+}

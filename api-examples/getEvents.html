@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+</head>
+<script type="text/javascript">
+  function getEvents(datetype, elementID) {
+    var xhr = new XMLHttpRequest();
+    xhr.withCredentials = false;
+
+    xhr.addEventListener("readystatechange", function() {
+      if (this.readyState === 4) {
+        if (xhr.status >= 200 && xhr.status < 400) {
+
+          var eventArray = JSON.parse(xhr.responseText);
+          renderEvents(eventArray, datetype, elementID);
+
+        } else {
+          renderError(xhr.status, elementID);
+        }
+      }
+    });
+
+    xhr.open("GET", "http://localhost:3000/api/events?datetype=" + datetype);
+    xhr.setRequestHeader("apikey", "$2a$08$80xkMBwuEwte512V2LONXelPkDUMO3uefkz.5SA83kFFSJtmJfBbe");
+
+    // xhr.open("GET", "https://www.gigeasy.de/api/events");
+    // xhr.setRequestHeader("apikey", "<enterAPIKeyHere>");
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+
+    xhr.send();
+  }
+
+  function renderEvents(events, datetype, elementID) {
+    var contentArea = document.getElementById(elementID);
+
+    events.forEach(event => {
+      let eventDate = new Date(event.date);
+
+      if (event.type === "private") {
+        contentArea.insertAdjacentHTML('beforeend', '<div><p style="text-align: center;"><strong style="font-size: 20px;">' + dateToGermanDateString(eventDate) +
+          '<\/strong><\/p><p style="text-align: center; font-style: italic;">Geschlossene Gesellschaft<\/p><\/div><div><hr><\/div>');
+      } else {
+        // default values
+        let eventName = !event.name ? "" : event.name;
+        let eventLocation = !event.location ? "" : event.location;
+        let eventZip = !(event.address && event.address.zipCode) ? "" : event.address.zipCode;
+        let eventCity = !(event.address && event.address.city) ? "" : event.address.city;
+
+        contentArea.insertAdjacentHTML('beforeend', '<div><p style="text-align: center;"><strong style="font-size: 20px;">' + dateToGermanDateString(eventDate) + '<\/strong><\/p><p style="text-align: center;">' + eventName +
+          '<\/p><p style="text-align: center;">' + eventLocation + '<\/p><p style="text-align: center;">' + eventZip + ' ' + eventCity + '<\/p><\/div><div><hr><\/div>');
+      }
+    });
+  }
+
+  function renderError(status, elementID) {
+
+    var para = document.createElement("p");
+    var node = document.createTextNode("Fehler beim Aufruf der Veranstaltungsübersicht. Statuscode: " + status);
+    para.appendChild(node);
+
+    var element = document.getElementById(elementID);
+    element.appendChild(para);
+  }
+
+  function dateToGermanDateString(date) {
+
+    if (date) {
+      var weekdayNames = ['So.', 'Mo.', 'Di.', 'Mi.', 'Do.', 'Fr.', 'Sa.'];
+      var weekday = date.getDay();
+      var weekdayName = weekdayNames[weekday];
+      var day = date.getDate();
+      var month = date.getMonth() + 1; //Be careful! January is 0 not 1
+      var year = date.getFullYear();
+
+      if (day < 10) {
+        day = '0' + day;
+      }
+
+      if (month < 10) {
+        month = '0' + month;
+      }
+
+      return weekdayName + " " + day + "." + month + "." + year;
+    } else {
+      return null;
+    }
+  }
+</script>
+
+<body>
+  <div id="content_area">
+    <h2> Vergangene Veranstaltungen </h2>
+    <script>
+      getEvents("future");
+    </script>
+
+    <!-- <h2> Zukünftige Veranstaltungen </h2>
+    <script>
+      getEvents("future");
+    </script> -->
+
+    <!-- <h2> Alle Veranstaltungen </h2>
+    <script>
+      getEvents("all");
+    </script> -->
+
+  </div>
+</body>
+
+</html>

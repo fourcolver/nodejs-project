@@ -1,0 +1,83 @@
+<%- include("partials/gigeasy-header") -%>
+<div id="heading">
+
+  <h1>
+    Veranstaltungen
+    <% if(locals.bandlist) { %>
+    <select id="bandselect" class="band-select form-control inline">
+      <% bandlist.forEach(function(bandlist) {
+        var selected = ( bandlist.status == true ) ? "selected" : ""; %>
+      <option value="<%= bandlist.bandtype %>" <%=selected %>>
+        <%= bandlist.bandtype %>
+      </option>
+      <% }) %>
+    </select>
+    <% } %>
+  </h1>
+</div>
+<div id="messagebox">
+  <% if (messages.success) { %>
+  <!-- Success Alert -->
+  <div class="alert alert-success alert-dismissible fade show">
+    <strong>Gespeichert!</strong>
+    <%=messages.success %>
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+  </div>
+  <%} %>
+
+  <% if (messages.deleted) { %>
+  <!-- Success Alert -->
+  <div class="alert alert-success alert-dismissible fade show">
+    <strong>Gelöscht!</strong>
+    <%=messages.deleted %>
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+  </div>
+  <%} %>
+</div>
+
+
+<div class="position-relative">
+  <div class="mb-3 new-pos">
+    <form action="/events" method="post">
+      <input type="hidden" id="bandtype" name="bandtype" value="<%= bandtype %>"></input>
+      <button class="btn btn-dark" type="submit">Neue Veranstaltung</button>
+    </form>
+  </div>
+  <table id="eventTable" class="table table-striped table-hover responsive">
+    <thead>
+      <tr>
+        <th scope="col">Datum</th>
+        <th scope="col">Name</th>
+        <th scope="col">Ort</th>
+        <th scope="col">Status</th>
+        <th scope="col" colspan="3" class="text-center action-width">Aktion</th>
+      </tr>
+    </thead>
+    <tbody id="tbody">
+      <%
+          eventList.forEach(function(event) {
+          %>
+      <tr>
+        <td>
+          <%= dateFormatter.dateToGermanDateString(event.date);  %>
+        </td>
+        <td>
+          <%= event.name  %>
+        </td>
+        <td>
+          <%= event.address.zipCode + " " + event.address.city  %>
+        </td>
+        <td>
+          <%= event.status  %>
+        </td>
+        <td class="text-center"><a href="details/<%= event._id %>"><i class="fas fa-edit"></i></a></td>
+        <td class="text-center"><a href="copy/<%= event._id %>"><i class="fas fa-copy"></i></a></td>
+        <td class="text-center"><a class="a-button" id="deleteEvent" onclick="deleteEvent('<%= event._id %>')"><i class="fas fa-trash-alt"></i></a></td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+
+</div>
+
+<%- include("partials/footer") -%>

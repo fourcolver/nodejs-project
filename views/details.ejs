@@ -1,0 +1,418 @@
+<%- include("partials/gigeasy-header") -%>
+
+<script type="text/javascript">
+  $(document).ready(
+    function() {
+      var datefield = document.createElement("input");
+      datefield.setAttribute("type", "date");
+      if (datefield.type != "date") {
+        // assuming the controls you want to attach the plugin to
+        // have the "datepicker" class set
+        $("input.datepicker").Zebra_DatePicker();
+      }
+    });
+</script>
+
+<div class="container-fluid">
+  <div class="box" id="heading">
+    <h1>
+      Veranstaltung bearbeiten
+    </h1>
+  </div>
+
+  <div id="messagebox">
+    <% if (messages.success) { %>
+    <!-- Success Alert -->
+    <div class="alert alert-success alert-dismissible fade show">
+      <strong>Gespeichert!</strong>
+      <%=messages.success %>
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    <%} %>
+    <% if (messages.error) { %>
+    <!-- Success Alert -->
+    <div class="alert alert-danger alert-dismissible fade show">
+      <strong>Fehler!</strong>
+      <%= messages.error %>
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    <%} %>
+  </div>
+
+
+
+  <form id="eventForm" method="post">
+    <input type="hidden" name="eventId" value="<%= event._id %>"></input>
+    <input type="hidden" id="bandtype" name="bandtype" value="<%= event.bandtype %>">
+    <input type="hidden" id="version" name="version" value="<%= event.version %>">
+    <input type="hidden" id="invoice" name="invoice" value="<%= lastInvoiceNumber %>">
+
+
+    <!---------------------------------------------
+     Daten zur Veranstaltung
+    ***********************************************
+    ---------------------------------------------->
+    <!-- <h4>Daten zur Veranstaltung</h4> -->
+    <div>
+      <small>Zuletzt geändert am <%= dateFormatter.dateToGermanDateString(event.modified); %></small>
+      <br>
+      <br>
+    </div>
+    <div class="form-row">
+      <div class="col-md-2 mb-3">
+
+        <label for="eventStatus">Status *</label>
+        <select class="form-control" name="eventStatus">
+          <%
+        var options = [ "Anfrage", "In Bearbeitung", "Wartet auf Veranstalter", "Vertrag versendet", "Gebucht", "Abgesagt" ];
+        for ( var i = 0; i < options.length; i++ )
+        {
+            var selected = ( event.status == options [i] ) ? "selected" : "";
+            %>
+          <option value="<%=options[ i ] %>" <%=selected %>>
+            <%= options [i] %>
+          </option>
+          <%
+        }
+        %>
+        </select>
+      </div>
+      <div class="col-md-2 mb-3">
+        <label for="eventDate">Datum *</label>
+        <input type="date" class="form-control datepicker" name="eventDate" id="eventDate" value="<%= dateFormatter.dateToString(event.date); %>" required>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="col-md-6 mb-3">
+        <label for="eventName">Name der Veranstaltung *</label>
+        <small id="eventNameHelp" class="form-text text-muted">Was ist der Name oder Anlass der Veranstaltung (Straßenfest Musterhausen, 50 Jahre Musterverein)?</small>
+        <input type="text" class="form-control" autocomplete="eventName" id="eventName" name="eventName" value="<%= event.name %>" aria-describedby="eventNameHelp" required>
+      </div>
+    </div>
+
+
+    <div class="form-row">
+      <div class="form-group col-md-6 mb-3">
+        <label for="eventLocation">Location</label>
+        <small id="eventLocationHelp" class="form-text text-muted">In welcher Location (Bierzelt, Halle, Open Air) findet die Veranstaltung statt?</small>
+        <input type="text" class="form-control" name="eventLocation" value="<%= event.location %>" aria-describedby="eventLocationHelp">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col-md-6 mb-3">
+        <label for="eventStreetAndHouseNumber">Straße und Hausnummer</label>
+        <input type="text" class="form-control" id="eventStreetAndHouseNumber" name="eventStreetAndHouseNumber" value="<%= event.address.streetAndHouseNumber %>">
+      </div>
+
+    </div>
+    <div class="form-row">
+      <div class="col-md-2 mb-3">
+        <label for="eventZip">Postleitzahl</label>
+        <input type="text" pattern="[0-9]*" class="form-control" id="eventZip" name="eventZip" value="<%= event.address.zipCode %>">
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="eventCity">Ort</label>
+        <input type="text" class="form-control" id="eventCity" name="eventCity" value="<%= event.address.city %>">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="col-md-2 mb-3">
+        <label for="showtimeStart">Spielbeginn</label>
+        <input type="time" class="form-control" name="showtimeStart" id="showtimeStart" value="<%= event.showtimeStart; %>">
+      </div>
+      <div class="col-md-2 mb-3">
+        <label for="showtimeEnd">Spielende</label>
+        <input type="time" class="form-control" name="showtimeEnd" id="showtimeEnd" value="<%= event.showtimeEnd; %>">
+      </div>
+      <div class="col-md-2 mb-3">
+        <label for="pax">Geschätzte Besucheranzahl</label>
+        <input type="text" pattern="[0-9]*" class="form-control" name="pax" value="<%= event.pax %>">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="col-md-6 mb-3">
+        <label for="eventTypeRadios">Art der Veranstaltung</label>
+        <fieldset class="form-group">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="eventTypeRadios" id="radioPublicEvent" value="public" <% if(event.type==="public" ){ %> checked="checked" <% } %>>
+            <label class="form-check-label" for="radioPublicEvent">
+              öffentlich
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="eventTypeRadios" id="radioPrivateEvent" value="private" <% if(event.type==="private" ){ %> checked="checked" <% } %>>
+            <label class="form-check-label" for="radioPrivateEvent">
+              privat (Geschlossene Gesellschaft)
+            </label>
+          </div>
+        </fieldset>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="soundAndLightRadios">Technik</label>
+        <fieldset class="form-group">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="soundAndLightRadios" id="radioBand" value="band" <% if(event.soundAndLightProvider==="band" ){ %> checked="checked" <% } %>>
+            <label class="form-check-label" for="radioBand">
+              Ton- und Lichttechnik wird von der Band gestellt
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="soundAndLightRadios" id="radioOrganizer" value="organizer" <% if(event.soundAndLightProvider==="organizer" ){ %> checked="checked" <% } %>>
+            <label class="form-check-label" for="radioOrganizer">
+              Ton- und Lichttechnik wird vom Veranstalter gemäß dem Technical Rider der Band gestellt
+            </label>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <label for="eventMiscellaneous">Sonstiges</label>
+      <textarea class="form-control" rows="3" name="eventMiscellaneous"><%= event.miscellaneous %></textarea>
+    </div>
+
+    <hr>
+
+    <!---------------------------------------------
+     Ansprechpartner
+    ***********************************************
+    ---------------------------------------------->
+
+    <h4>Ansprechpartner</h4>
+
+    <div class="form-row">
+      <div class="col-md-6 mb-3">
+        <label for="contactName">Name</label>
+        <input type="text" class="form-control" id="contactName" name="contactName" value="<%= event.eventContact.name %>" aria-describedby="contactNameHelp">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="col-md-2 mb-3">
+        <label for="contactPhone">Telefon</label>
+        <input type="tel" class="form-control" id="contactPhone" name="contactPhone" value="<%= event.eventContact.phone %>">
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="contactEmail">Email</label>
+        <input type="email" class="form-control" name="contactEmail" value="<%= event.eventContact.email %>">
+      </div>
+    </div>
+
+    <hr>
+
+    <!---------------------------------------------
+     Daten zur Vertragserstellung
+    ***********************************************
+    ---------------------------------------------->
+
+    <h4>Gage</h4>
+    <div class="form-row">
+      <div class="col-md-2 mb-3">
+        <label for="price">Gage (brutto)</label>
+        <input type="text" pattern="[0-9]*" class="form-control" name="price" value="<%= event.price %>">
+      </div>
+    </div>
+
+    <hr>
+
+    <h4>Vertragsanschrift</h4>
+    <div class="form-row">
+      <div class="col-md-6 mb-3">
+        <label for="organizerName">Veranstalter</label>
+        <small id="organizerNameHelp" class="form-text text-muted">Vorname und Nachname oder Name des Vereins / des Unternehmens / der Organisation</small>
+        <textarea class="form-control" autocomplete="organizerName" name="organizerName" aria-describedby="organizerNameHelp"><%= event.contractingParty.name %></textarea>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="col-md-6 mb-3">
+        <label for="organizerStreetAndHouseNumber">Straße und Hausnummer</label>
+        <input type="text" class="form-control" name="organizerStreetAndHouseNumber" value="<%= event.contractingParty.address.streetAndHouseNumber %>">
+      </div>
+
+    </div>
+    <div class="form-row">
+      <div class="col-md-2 mb-3">
+        <label for="organizerZip">Postleitzahl</label>
+        <input type="text" pattern="[0-9]*" class="form-control" name="organizerZip" value="<%= event.contractingParty.address.zipCode %>">
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="organizerCity">Ort</label>
+        <input type="text" class="form-control" name="organizerCity" value="<%= event.contractingParty.address.city %>">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="col-md-3 mb-3">
+        <label for="organizerPhone">Telefon</label>
+        <input type="tel" class="form-control" name="organizerPhone" value="<%= event.contractingParty.phone %>">
+      </div>
+      <div class="col-md-3 mb-3">
+        <label for="organizerEmail">Email</label>
+        <input type="email" class="form-control" name="organizerEmail" value="<%= event.contractingParty.email %>">
+      </div>
+    </div>
+    <hr>
+
+    <!---------------------------------------------
+     Daten zur Durchführung
+    ***********************************************
+    ---------------------------------------------->
+
+    <h4>Daten zur Veranstaltungsdurchführung</h4>
+    <div class="form-row">
+      <div class="col-md-2 mb-3">
+
+        <label for="poster">Plakate</label>
+        <select class="form-control" name="poster">
+          <%
+          var options = [ "offen", "nicht gewünscht", "versendet"];
+          for ( var i = 0; i < options.length; i++ )
+          {
+              var selected = ( event.poster == options [i] ) ? "selected" : "";
+              %>
+          <option value="<%=options[ i ] %>" <%=selected %>>
+            <%= options [i] %>
+          </option>
+          <%
+          }
+          %>
+        </select>
+      </div>
+
+
+      <div class="col-md-2 mb-3">
+        <label for="poster">Helfer Auf- und Abbau</label>
+        <select class="form-control" name="assistants">
+          <%
+          var options = [ "offen", "keine Helfer vereinbart", "Helfer vereinbart"];
+          for ( var i = 0; i < options.length; i++ )
+          {
+              var selected = ( event.assistants == options [i] ) ? "selected" : "";
+              %>
+          <option value="<%=options[ i ] %>" <%=selected %>>
+            <%= options [i] %>
+          </option>
+          <%
+          }
+          %>
+        </select>
+      </div>
+    </div>
+
+    <h4>Rechnungsanschrift</h4>
+    <fieldset class="form-group">
+      <div class="row">
+        <div class="col-sm-10">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="differentBillingAddress" id="radioDifferentBillingAddressNo" value=false <% if(event.differentBillingAddress===false ){ %> checked="checked" <% } %>>
+            <label class="form-check-label" for="radioDifferentBillingAddressNo">
+              Rechnungsadresse wie Vertragsanschrift
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="differentBillingAddress" id="radioDifferentBillingAddressYes" value=true <% if(event.differentBillingAddress===true){ %> checked="checked" <% } %>>
+            <label class="form-check-label" for="radioDifferentBillingAddressYes">
+              Abweichende Rechnungsadresse
+            </label>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+
+
+    <div class="differentBillingAddress" id="differentBillingAddress">
+      <div class="form-row">
+        <div class="col-md-6 mb-3">
+          <label for="billingName">Rechnungsempfänger</label>
+          <small id="billingNameHelp" class="form-text text-muted">Vorname und Nachname oder Name des Vereins / des Unternehmens / der Organisation</small>
+          <textarea class="form-control" name="billingName" aria-describedby="billingNameHelp"><%= event.billingContact.name %></textarea>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="col-md-6 mb-3">
+          <label for="billingStreetAndHouseNumber">Straße und Hausnummer</label>
+          <input type="text" class="form-control" name="billingStreetAndHouseNumber" value="<%= event.billingContact.address.streetAndHouseNumber %>">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="col-md-2 mb-3">
+          <label for="billingZip">Postleitzahl</label>
+          <input type="text" pattern="[0-9]*" class="form-control" name="billingZip" value="<%= event.billingContact.address.zipCode %>">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="billingCity">Ort</label>
+          <input type="text" class="form-control" name="billingCity" value="<%= event.billingContact.address.city %>">
+        </div>
+      </div>
+    </div>
+    <div class="button-group">
+      <!-- <button type="submit" class="btn btn-primary" formaction="save">Speichern</button> -->
+      <button type="submit" id="saveEvent" class="btn btn-primary">Speichern</button>
+      <button type="submit" class="btn btn-secondary" formaction="close" formnovalidate>Schließen</button>
+      <!-- <button type="submit" class="btn btn-secondary" formaction="/delete" formnovalidate>Löschen</button> -->
+      <button type="submit" class="btn btn-secondary" formaction="/ics">Kalendereintrag</button>
+      <button type="submit" class="btn btn-secondary" formaction="/contract">Vertrag</button>
+      <button type="button" class="btn btn-secondary" onclick="sendInfomail()">Infomail</button>
+      <button type="button" class="btn btn-secondary" onclick="createInvoice('<%= lastInvoiceNumber %>')">Rechnung</button>
+    </div>
+  </form>
+
+  <div class="file-upload">
+    <!-- MULTIPLE FILES -->
+    <form action="/uploadFiles" method="post" enctype="multipart/form-data">
+
+      <input type="hidden" name="eventId" value="<%= event._id %>"></input>
+      <input type="hidden" name="bandtype" value="<%= event.bandtype %>">
+
+      <input type="file" name="uploadfiles" id="file-upload" multiple required />
+
+      <label class="btn btn-primary label-content" for="file-upload"><i class="fa fa-upload"></i> Upload file</label>
+      <div class="after-content">
+        <table id="upload_table" class="table table-hover responsive">
+          <thead>
+            <tr>
+              <th scope="col">Document</th>
+              <th scope="col" colspan="2" class="text-center action-width">Aktion</th>
+            </tr>
+          </thead>
+          <tbody id="">
+            <% if (file_content) {
+              for (i = 0; i < file_content.content.length; i++) { %>
+            <tr>
+              <td class="eventid"><%= file_content.content[i].name %></td>
+              <td class="text-center"><a class="a-button" href="/getFiles/<%= file_content.eventId %>-<%= file_content.content[i].name %>"><i class="fas fa-download"></i></a></td>
+              <td class="text-center"><a class="a-button" onclick="deleteFile('<%= file_content.eventId %>-<%= file_content.content[i].name %>', '<%= file_content.eventId %>', '<%= file_content.content[i].name %>')"><i
+                    class="fas fa-trash-alt"></i></a></td>
+            </tr>
+            <% }
+            }
+            else { %>
+            <tr>
+              <td>This event has no files</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+      <div class="upload-content d-none">
+        <div class="file-content" id="file-upload-fileinfo"></div>
+        <div class="button-group">
+          <button type="submit" class="btn btn-primary">Upload</button>
+          <button type="submit" formaction="/cancelUpload" class="btn btn-primary cancel-upload">Cancel</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+</div>
+
+<%- include("partials/footer") -%>

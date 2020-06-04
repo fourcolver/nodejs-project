@@ -1,0 +1,171 @@
+h1 {
+  font-size: 2rem;
+}
+
+main > .container-fluid {
+  padding: 70px 15px 0px;
+}
+
+
+.footer {
+  background-color: #3f4d71;
+}
+
+.differentBillingAddress {
+  display: none;
+}
+
+.action-width {
+  width: 5%;
+}
+
+a {
+  color: #3f4d71;
+}
+.a-button {
+  color: #3f4d71;
+  cursor: pointer;
+}
+
+.a-button:hover {
+  text-decoration: underline !important;
+}
+
+.d-width {
+  width: 285px;
+}
+
+#eventTable_filter {
+  text-align: right;
+}
+
+.gigeasy-header {
+  background-color: #3f4d71;
+  /* #fd7792 */
+  /* #55ae95 */
+}
+
+.gigeasy-brand {
+  font-size: 1.5rem;
+  font-family: 'Indie Flower', cursive;
+  color: #ffac8e;
+  /* #fd7792 */
+  /* #55ae95 */
+}
+
+.gigeasy-brand-big {
+  font-size: 2.5rem;
+  font-family: 'Indie Flower', cursive;
+  color: #ffac8e;
+  /* #fd7792 */
+  /* #55ae95 */
+}
+
+.band-select {
+  /* ... */
+  /* background: none; */
+  font-size: 1.25rem;
+  /* color: white; */
+  border-top:  0;
+  border-left:  0;
+  border-right:  0;
+  display: inline;
+  width: auto;
+}
+
+.gigeasy-icon {
+  color: #ffac8e;
+}
+
+.gig {
+  color: white;
+  /* #fd7792 */
+  /* #55ae95 */
+}
+
+.easy {
+  color: #ffac8e;
+}
+
+.icon-bar {
+  width: 22px;
+  height: 2px;
+  background-color: #B6B6B6;
+  display: block;
+  transition: all 0.2s;
+  margin-top: 4px
+}
+
+.navbar-toggler {
+  border: none;
+  background: transparent !important;
+}
+
+.navbar-toggler .top-bar {
+  transform: rotate(45deg);
+  transform-origin: 10% 10%;
+}
+
+.navbar-toggler .middle-bar {
+  opacity: 0;
+}
+
+.navbar-toggler .bottom-bar {
+  transform: rotate(-45deg);
+  transform-origin: 10% 90%;
+}
+
+.navbar-toggler.collapsed .top-bar {
+  transform: rotate(0);
+}
+
+.navbar-toggler.collapsed .middle-bar {
+  opacity: 1;
+}
+
+.navbar-toggler.collapsed .bottom-bar {
+  transform: rotate(0);
+}
+.history-table {
+  display: flex;
+  justify-content: center;
+  margin-top: 35px;
+}
+input[type="file"] { 
+  z-index: -1;
+  position: absolute;
+  opacity: 0;
+}
+
+input:focus + label {
+  outline: 2px solid;
+}
+
+.label-content {
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.file-content {
+  border: 1px solid #007bff;
+  border-radius: 8px;
+  margin-top: 10px;
+  margin-bottom: 12px;
+}
+
+.file-content p {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-left: 20px;
+}
+
+.button-group {
+  margin-bottom: 10px;
+}
+
+.after-content {
+  margin-bottom: 10px;
+  border: 1px solid;
+  padding: 10px;
+  border-radius: 10px;
+}

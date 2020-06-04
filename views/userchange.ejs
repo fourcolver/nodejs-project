@@ -1,0 +1,33 @@
+<%- include("partials/gigeasy-header") -%>
+<div class="container-fluid">
+    <div id="heading">
+        <h1>
+            User Setting
+        </h1>
+    </div>
+
+    <div class="card mt-5">
+        <div class="card-body">
+
+            <!-- Makes POST request to /register route -->
+            <form action="/userchange" method="POST">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="hidden" name="id" value="<%= currentuser._id %>">
+                    <input type="text" class="form-control" name="currentuser" value="<%= currentuser.username %>" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" name="currentemail" value="<%= currentuser.email %>" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" name="currentpass" required>
+                </div>
+                <button type="submit" class="btn btn-dark ml-auto d-flex">Save</button>
+            </form>
+
+        </div>
+    </div>
+</div>
+<%- include("partials/footer") -%>

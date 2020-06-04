@@ -1,0 +1,43 @@
+<%- include("partials/gigeasy-header") -%>
+<div class="container-fluid">
+  <div id="heading">
+    <h1>
+      Änderungshistorie
+    </h1>
+
+  </div>
+</div>
+<div class="history-table">
+  <div class="position-relative w-75">
+    <table id="eventChangeTable" class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Band</th>
+          <th scope="col">Name</th>
+          <th scope="col">Ort</th>
+          <th scope="col">Erstellt</th>
+          <th scope="col">Version</th>
+          <th scope="col">Geändert am</th>
+          <th scope="col">Geändert von</th>
+        </tr>
+      </thead>
+      <tbody id="bandtbody">
+        <%
+            changedHistory.forEach(function(event, modifier) {
+                  %>
+        <tr>
+          <td><%= event.bandtype%></td>
+          <td><%= event.name%></td>
+          <td><%= event.address.city%></td>
+          <td><%= dateFormatter.dateToGermanDateString(event.created)%></td>
+          <td><%= event.version%></td>
+          <td><%= dateFormatter.dateToGermanDateString(event.modified)%></td>
+          <td><%= event.modifierID%></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<%- include("partials/footer") -%>

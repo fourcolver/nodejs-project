@@ -1,0 +1,30 @@
+<%- include("partials/gigeasy-header") -%>
+<div class="container-fluid">
+    <div id="heading">
+        <h1>
+            Band hinzufügen
+        </h1>
+    </div>
+    <div id="messagebox">
+        <% if (messages.addband) { %>
+        <!-- warning Alert -->
+        <div class="alert alert-warning alert-dismissible fade show">
+            <strong>Gelöscht!</strong> <%=messages.addband %>
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+        </div>
+        <%} %>
+    </div>
+  
+    <div class="mb-5 mt-5">
+        <div class="w-75">
+            <form class="d-flex" action="/addband" method="POST">
+                <div class="form-group d-flex w-75">
+                    <label class="w-50" for="band">Band name</label>
+                    <input type="text" class="form-control" name="newband" required>
+                </div>
+                <button type="submit" class="btn btn-dark ml-auto h-75">Save</button>
+            </form>
+        </div>
+    </div>
+</div>
+<%- include("partials/footer") -%>
